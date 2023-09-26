@@ -1,6 +1,7 @@
 from models.models import Task, UpdateTask
 from models.user import User
 from models.clients import Client
+from models.Suppliers import Suppliers
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 import datetime
@@ -131,4 +132,24 @@ async def get_one_supplier_id(id):
     supplier = await supplier_collection.find_one({"_id": ObjectId(id)})
     return supplier
 
+async def get_all_supplier():
+    clients = []
+    cursor = supplier_collection.find({})
+    async for document in cursor:
+        if isinstance(document.get("fecha", ""), str) and len(document.get("fecha", "")) > 0:
+            try:
+                # Parse the datetime string
+                fecha = datetime.datetime.strptime(document["fecha"], "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                # Handle the case where the datetime string is not valid
+                fecha = None
+        else:
+            fecha = None
+        clients.append(Suppliers(**document))
+    return clients
+
+async def create_client(user):
+    new_supplier = await supplier_collection.insert_one(user)
+    created_supplier = await supplier_collection.find_one({"_id": new_supplier.inserted_id})
+    return created_supplier
 

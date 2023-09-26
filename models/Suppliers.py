@@ -25,7 +25,17 @@ class Suppliers(BaseModel):
    category: str
    contact: str
 
-   class Config:
+class updateSuppliers(BaseModel):
+      name: Optional[str] = None
+      direction: Optional[str] = None
+      phone: Optional[str] = None
+      email: Optional[int] = None
+      aprove: Optional[bool] = None
+      category: Optional[str] = None
+      contact: Optional[str] = None
+
+
+class Config:
         orm_mode = True
         allow_population_by_field_name = True
         json_encoders = {
