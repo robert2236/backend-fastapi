@@ -4,6 +4,7 @@ from routes.task import task
 from routes.user import user
 from routes.client import client
 from routes.purchase import purchase
+from routes.brand import brand
 from decouple import config
 
 
@@ -29,3 +30,5 @@ app.include_router(task)
 app.include_router(user)
 app.include_router(client)
 app.include_router(purchase)
+app.include_router(brand)
+

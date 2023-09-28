@@ -3,6 +3,7 @@ from models.user import User
 from models.clients import Client
 from models.Suppliers import Suppliers
 from models.purchase import Purchase
+from models.brands import Marca
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 import datetime
@@ -16,6 +17,7 @@ user_collection = database.users
 client_collection = database.clients
 supplier_collection = database.suppliers
 purchase_collection = database.purchases
+brand_collection = database.brands
 
 
 async def get_one_task_id(id):
@@ -189,4 +191,46 @@ async def create_purchase(purchase):
 
 async def delete_purchase(id):
     await purchase_collection.delete_one({"_id": ObjectId(id)})
+    return True
+
+# Funciones para la gestion de marca
+
+async def get_one_brand_id(id):
+    brand = await brand_collection.find_one({"_id": ObjectId(id)})
+    return brand
+
+async def get_one_brand(name):
+    client = await brand_collection.find_one({"name": name})
+    return client
+
+async def get_all_brand():
+    brands = []
+    cursor = brand_collection.find({})
+    async for document in cursor:
+        if isinstance(document.get("fecha", ""), str) and len(document.get("fecha", "")) > 0:
+            try:
+                # Parse the datetime string
+                fecha = datetime.datetime.strptime(document["fecha"], "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                # Handle the case where the datetime string is not valid
+                fecha = None
+        else:
+            fecha = None
+        brands.append(Marca(**document))
+    return brands
+
+async def create_brand(brand):
+    new_brand = await brand_collection.insert_one(brand)
+    created_brand = await brand_collection.find_one({"_id": new_brand.inserted_id})
+    return created_brand
+
+async def update_brand(id: str, data):
+    brand = {k: v for k, v in data.dict().items() if v is not None}
+    await brand_collection.update_one({"_id": ObjectId(id)}, {"$set": brand})
+    document = await brand_collection.find_one({"_id": ObjectId(id)})
+    return document
+
+
+async def delete_brand(id):
+    await brand_collection.delete_one({"_id": ObjectId(id)})
     return True
