@@ -2,6 +2,7 @@ from models.models import Task, UpdateTask
 from models.user import User
 from models.clients import Client
 from models.Suppliers import Suppliers
+from models.purchase import Purchase
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 import datetime
@@ -14,6 +15,7 @@ collection = database.tasks
 user_collection = database.users
 client_collection = database.clients
 supplier_collection = database.suppliers
+purchase_collection = database.purchases
 
 
 async def get_one_task_id(id):
@@ -148,8 +150,43 @@ async def get_all_supplier():
         clients.append(Suppliers(**document))
     return clients
 
-async def create_client(user):
+async def create_supplier(user):
     new_supplier = await supplier_collection.insert_one(user)
     created_supplier = await supplier_collection.find_one({"_id": new_supplier.inserted_id})
     return created_supplier
 
+# Funciones para la gestion de compras
+
+async def get_one_purchase_id(id):
+    purchase = await purchase_collection.find_one({"_id": ObjectId(id)})
+    return purchase
+
+async def get_one_client(cod):
+    client = await purchase_collection.find_one({"cod": cod})
+    return client
+
+
+async def get_all_purchase():
+    purchases = []
+    cursor = purchase_collection.find({})
+    async for document in cursor:
+        if isinstance(document.get("fecha", ""), str) and len(document.get("fecha", "")) > 0:
+            try:
+                # Parse the datetime string
+                fecha = datetime.datetime.strptime(document["fecha"], "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                # Handle the case where the datetime string is not valid
+                fecha = None
+        else:
+            fecha = None
+        purchases.append(Purchase(**document))
+    return purchases
+
+async def create_purchase(purchase):
+    new_purchase = await purchase_collection.insert_one(purchase)
+    created_purchase = await purchase_collection.find_one({"_id": new_purchase.inserted_id})
+    return created_purchase
+
+async def delete_purchase(id):
+    await purchase_collection.delete_one({"_id": ObjectId(id)})
+    return True
