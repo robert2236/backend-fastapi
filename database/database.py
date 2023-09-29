@@ -4,6 +4,7 @@ from models.clients import Client
 from models.Suppliers import Suppliers
 from models.purchase import Purchase
 from models.brands import Marca
+from models.products import Product
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 import datetime
@@ -18,6 +19,7 @@ client_collection = database.clients
 supplier_collection = database.suppliers
 purchase_collection = database.purchases
 brand_collection = database.brands
+products_collection = database.products
 
 
 async def get_one_task_id(id):
@@ -233,4 +235,47 @@ async def update_brand(id: str, data):
 
 async def delete_brand(id):
     await brand_collection.delete_one({"_id": ObjectId(id)})
+    return True
+
+
+# Funciones para la gestion de productos
+
+async def get_one_product_id(id):
+    brand = await products_collection.find_one({"_id": ObjectId(id)})
+    return brand
+
+async def get_one_product(name):
+    client = await products_collection.find_one({"name": name})
+    return client
+
+async def get_all_product():
+    products = []
+    cursor = products_collection.find({})
+    async for document in cursor:
+        if isinstance(document.get("fecha", ""), str) and len(document.get("fecha", "")) > 0:
+            try:
+                # Parse the datetime string
+                fecha = datetime.datetime.strptime(document["fecha"], "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                # Handle the case where the datetime string is not valid
+                fecha = None
+        else:
+            fecha = None
+        products.append(Product(**document))
+    return products
+
+async def create_product(product):
+    new_product = await products_collection.insert_one(product)
+    created_product = await products_collection.find_one({"_id": new_product.inserted_id})
+    return created_product
+
+async def update_product(id: str, data):
+    product = {k: v for k, v in data.dict().items() if v is not None}
+    await products_collection.update_one({"_id": ObjectId(id)}, {"$set": product})
+    document = await products_collection.find_one({"_id": ObjectId(id)})
+    return document
+
+
+async def delete_product(id):
+    await products_collection.delete_one({"_id": ObjectId(id)})
     return True

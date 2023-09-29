@@ -5,6 +5,8 @@ from routes.user import user
 from routes.client import client
 from routes.purchase import purchase
 from routes.brand import brand
+from routes.product import product
+from routes.join_inventario import inventario
 from decouple import config
 
 
@@ -31,4 +33,7 @@ app.include_router(user)
 app.include_router(client)
 app.include_router(purchase)
 app.include_router(brand)
+app.include_router(product)
+app.include_router(inventario)
+
 
