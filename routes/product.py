@@ -18,6 +18,24 @@ async def get_products():
     response = await get_all_product()
     return response
 
+@product.get('/api/products/total')
+async def get_total_price_stocks():
+    products = await get_all_product()
+    total_price = sum(product.price for product in products)
+    total_stocks = sum(product.units for product in products)
+    return {'total_price': total_price, 'total_stocks': total_stocks}
+
+@product.get('/api/products/date')
+async def get_products():
+    products = await get_all_product()
+    product_data = []
+    for product in products:
+        product_data.append({
+            'units': product.units,
+            'dateProducts': product.dateProducts
+        })
+    return product_data
+
 @product.get('/api/products/{id}', response_model=Product)
 async def get_products_by_id(id: str):
     response = await get_one_product_id(id)
@@ -53,3 +71,7 @@ async def remove_brand(id: str):
     if response:
         return "Successfully deleted task"
     raise HTTPException(404, f"There is no user with the id {id}")
+
+
+
+

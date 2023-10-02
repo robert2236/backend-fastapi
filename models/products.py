@@ -1,6 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel, Field, validator
 from bson import ObjectId
+import datetime
+
 
 
 
@@ -22,6 +24,7 @@ class Product(BaseModel):
    description: str
    price: int
    units: int
+   dateProducts: datetime.datetime = datetime.datetime.now()
 
 class UpdateProduct(BaseModel):
     name: Optional[str] = None
