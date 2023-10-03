@@ -8,13 +8,16 @@ from database.database import (
     delete_client  
     )
 from models.clients import Client, UpdateClient
+from fastapi_paginate import Page, add_pagination, paginate
 
 client = APIRouter()
 
-@client.get('/api/clients')
+@client.get('/api/clients', response_model=Page[Client])
 async def get_clients():
     response = await get_all_clients()
-    return response
+    return paginate(response)
+
+add_pagination(client)
 
 @client.get('/api/clients/{id}', response_model=Client)
 async def get_client_by_id(id: str):
