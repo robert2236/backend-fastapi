@@ -5,6 +5,7 @@ from models.Suppliers import Suppliers
 from models.purchase import Purchase
 from models.brands import Marca
 from models.products import Product
+from models.forms import Form
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 import datetime
@@ -20,6 +21,7 @@ supplier_collection = database.suppliers
 purchase_collection = database.purchases
 brand_collection = database.brands
 products_collection = database.products
+form_collection = database.forms
 
 
 async def get_one_task_id(id):
@@ -279,3 +281,41 @@ async def update_product(id: str, data):
 async def delete_product(id):
     await products_collection.delete_one({"_id": ObjectId(id)})
     return True
+
+# Funciones para el formulario
+
+async def get_one_form_id(id):
+    form = await form_collection.find_one({"_id": ObjectId(id)})
+    return form
+
+async def get_one_form(comment):
+    form = await form_collection.find_one({"comment": comment})
+    return form
+
+async def get_all_form(page , limit):
+    forms = []
+    skip = (page - 1) * limit
+    cursor = form_collection.find({}).skip(skip).limit(limit)
+    async for document in cursor:
+        if isinstance(document.get("fecha", ""), str) and len(document.get("fecha", "")) > 0:
+            try:
+                # Parse the datetime string
+                fecha = datetime.datetime.strptime(document["fecha"], "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                # Handle the case where the datetime string is not valid
+                fecha = None
+        else:
+            fecha = None
+        forms.append(Form(**document))
+
+    return forms
+
+async def create_form(form):
+    new_form = await form_collection.insert_one(form)
+    created_form = await form_collection.find_one({"_id": new_form.inserted_id})
+    return created_form
+
+async def delete_form(id):
+    await form_collection.delete_one({"_id": ObjectId(id)})
+    return True
+

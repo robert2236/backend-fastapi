@@ -1,8 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field, validator
 from bson import ObjectId
-import datetime
-
+from datetime import datetime
 
 
 
@@ -17,21 +16,15 @@ class PyObjectId(ObjectId):
         raise ValueError('Invalid ObjectId')
      return str(v)
     
-class Product(BaseModel):
-   id: Optional[PyObjectId] = Field(alias='_id', default=None)
-   code: int
-   name: str
-   description: str
-   price: int
-   units: int
-   dateProducts: datetime.datetime = datetime.datetime.now()
-
-class UpdateProduct(BaseModel):
-    name: Optional[str] = None
-    code: Optional[int] = None
-    description: Optional[str] = None
-    price: Optional[int] = None
-    units: Optional[int] = None
+class Form(BaseModel):
+    id: Optional[PyObjectId] = Field(alias='_id', default=None)
+    name: str
+    email: str
+    number: int
+    city: str
+    comment: str
+    date: datetime = datetime.now()
+    
 
 class Config:
         orm_mode = True

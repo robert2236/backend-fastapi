@@ -8,13 +8,16 @@ from database.database import (
     update_brand  
     )
 from models.brands import Marca, UpdateMarca
+from fastapi_paginate import Page, add_pagination, paginate
 
 brand = APIRouter()
 
-@brand.get('/api/brands')
+@brand.get('/api/brands', response_model=Page[Marca])
 async def get_clients():
     response = await get_all_brand()
-    return response
+    return paginate(response)
+
+add_pagination(brand)
 
 @brand.get('/api/brands/{id}', response_model=Marca)
 async def get_brand_by_id(id: str):
