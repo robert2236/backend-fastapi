@@ -4,7 +4,8 @@ from database.database import (
     get_one_form,
     get_all_form,
     create_form,
-    delete_form  
+    delete_form,
+    total_comentarios  
     )
 from models.forms import Form
 from fastapi_paginate import Page, add_pagination, paginate
@@ -17,6 +18,12 @@ async def get_form():
     return paginate(response)
 
 add_pagination(form)
+
+@form.get('/api/forms/notifications')
+async def get_total_form():
+    forms = await total_comentarios()
+    return {'total_form': forms}
+
 
 @form.get('/api/forms/{id}', response_model=Form)
 async def get_form_by_id(id: str):

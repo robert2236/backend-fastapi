@@ -1,6 +1,7 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from bson import ObjectId
+import datetime
 
 
 class PyObjectId(ObjectId):
@@ -13,19 +14,13 @@ class PyObjectId(ObjectId):
      if not ObjectId.is_valid(v):
         raise ValueError('Invalid ObjectId')
      return str(v)
-
-
-
-class User(BaseModel):
-    id: Optional[PyObjectId] = Field(alias='_id', default=None)
-    username: str
-    password: str
-
-class UpdateUser(BaseModel):
-    username: Optional[str] = None
-    password: Optional[str] = None
-
-
+    
+class Devolution(BaseModel):
+      id: Optional[PyObjectId] = Field(alias='_id', default=None) 
+      cod: int
+      name: str   
+      observation: str
+      units: int
 
 class Config:
         orm_mode = True
