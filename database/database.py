@@ -324,9 +324,9 @@ async def get_all_devolution():
         devolutions.append(Devolution(**document))
     return devolutions
 
-async def create_devolution(product):
-    new_devolution = await devolution_collection.insert_one(product)
-    created_devolution = await products_collection.find_one({"_id": new_devolution.inserted_id})
+async def create_devolution(devolution):
+    new_devolution = await devolution_collection.insert_one(devolution)
+    created_devolution = await devolution_collection.find_one({"_id": new_devolution.inserted_id})
     return created_devolution
 
 
@@ -345,10 +345,9 @@ async def get_one_form(comment):
     form = await form_collection.find_one({"comment": comment})
     return form
 
-async def get_all_form(page , limit):
+async def get_all_form():
     forms = []
-    skip = (page - 1) * limit
-    cursor = form_collection.find({}).skip(skip).limit(limit)
+    cursor = form_collection.find({})
     async for document in cursor:
         if isinstance(document.get("fecha", ""), str) and len(document.get("fecha", "")) > 0:
             try:

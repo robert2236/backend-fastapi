@@ -7,20 +7,23 @@ from database.database import (
     delete_purchase  
     )
 from models.purchase import Purchase, UpdatePurchase
+from fastapi_paginate import Page, add_pagination, paginate
 
 purchase = APIRouter()
 
 
 
-@purchase.get('/api/purchases')
+@purchase.get('/api/purchases', response_model=Page[Purchase])
 async def get_purchase(category: str = Query(None)):
     response = await get_all_purchase()
     if category:
         filtered_purchases = [purchase for purchase in response if purchase.category == category]
         if filtered_purchases:
-            return filtered_purchases
+            return paginate(filtered_purchases)
         raise HTTPException(404, f"There are no purchases in the category {category}")
-    return response
+    return paginate(response)
+
+add_pagination(purchase)
 
 @purchase.get('/api/purchases/total')
 async def get_total_price_stocks():

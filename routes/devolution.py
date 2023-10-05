@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from database.database import (
     get_one_devolution_id,
     get_one_devolution,
@@ -11,10 +11,18 @@ from fastapi_paginate import Page, add_pagination, paginate
 
 devolution = APIRouter()
 
-@devolution.get('/api/devolution')
-async def get_devolution():
+@devolution.get('/api/devolution', response_model=Page[Devolution])
+async def get_devolution(cod: int = Query(None)):
     response = await get_all_devolution()
-    return response
+    if cod:
+        filtered_code = [client for client in response if client.cod == cod]
+        if filtered_code:
+             return paginate(filtered_code)
+        raise HTTPException(404, f"There are no clients asociate with the cod: {cod}")
+    return paginate(response)
+
+add_pagination(devolution)
+
 
 @devolution.get('/api/devolution/{id}', response_model=Devolution)
 async def get_devolution_by_id(id: str):

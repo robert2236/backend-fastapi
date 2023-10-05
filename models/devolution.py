@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field, validator
 from bson import ObjectId
-import datetime
+from datetime import datetime
 
 
 class PyObjectId(ObjectId):
@@ -21,6 +21,7 @@ class Devolution(BaseModel):
       name: str   
       observation: str
       units: int
+      date: datetime = datetime.now()
 
 class Config:
         orm_mode = True

@@ -36,3 +36,5 @@ class Config:
         json_encoders = {
             ObjectId: str
         }
+
+        
