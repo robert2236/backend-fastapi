@@ -6,7 +6,9 @@ from routes.client import client
 from routes.purchase import purchase
 from routes.brand import brand
 from routes.product import product
+from routes.devolution import devolution
 from routes.join_inventario import inventario
+from routes.tasa import tasa
 from routes.form import form
 from decouple import config
 
@@ -37,5 +39,7 @@ app.include_router(brand)
 app.include_router(product)
 app.include_router(inventario)
 app.include_router(form)
+app.include_router(devolution)
+app.include_router(tasa)
 
 
