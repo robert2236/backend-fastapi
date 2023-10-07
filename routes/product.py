@@ -8,15 +8,18 @@ from database.database import (
     update_product  
     )
 from models.products import Product, UpdateProduct
+from fastapi_paginate import Page, add_pagination, paginate
 
 
 product = APIRouter()
 
 
-@product.get('/api/products')
+@product.get('/api/products', response_model=Page[Product])
 async def get_products():
     response = await get_all_product()
-    return response
+    return paginate(response)
+
+add_pagination(product)
 
 @product.get('/api/products/total')
 async def get_total_price_stocks():

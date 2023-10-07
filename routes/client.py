@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from database.database import (
     get_one_client_id,
     get_one_client,
@@ -12,12 +12,20 @@ from fastapi_pagination import Page, add_pagination, paginate
 
 client = APIRouter()
 
+
 @client.get('/api/clients', response_model=Page[Client])
-async def get_clients():
+async def get_clients(email: str = Query(None)):
     response = await get_all_clients()
+    if email:
+        filtered_email = [client for client in response if client.email == email]
+        if filtered_email:
+             return paginate(filtered_email)
+        raise HTTPException(404, f"There are no clients asociate with the email {email}")
     return paginate(response)
 
 add_pagination(client)
+
+
 
 @client.get('/api/clients/{id}', response_model=Client)
 async def get_client_by_id(id: str):
@@ -31,7 +39,6 @@ async def save_client(client: Client):
     findClient = await get_one_client(client.ci)
     if findClient:
         raise HTTPException(409, "Client already exists")
-
     response = await create_client(client.dict())
     print(response)
     if response:

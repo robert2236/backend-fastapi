@@ -13,8 +13,13 @@ from fastapi_pagination import Page, add_pagination, paginate
 brand = APIRouter()
 
 @brand.get('/api/brands', response_model=Page[Marca])
-async def get_clients():
+async def get_clients(category: str = Query(None)):
     response = await get_all_brand()
+    if category:
+        filtered_brands = [brand for brand in response if brand.category == category]
+        if filtered_brands:
+            return paginate(filtered_brands)
+        raise HTTPException(404, f"There are no purchases in the category {category}")
     return paginate(response)
 
 add_pagination(brand)

@@ -20,12 +20,11 @@ class User(BaseModel):
     id: Optional[PyObjectId] = Field(alias='_id', default=None)
     username: str
     password: str
-    email: str
 
 class UpdateUser(BaseModel):
     username: Optional[str] = None
     password: Optional[str] = None
-    email: Optional[bool] = None
+
 
 
 class Config:

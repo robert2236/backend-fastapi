@@ -6,9 +6,12 @@ from models.purchase import Purchase
 from models.brands import Marca
 from models.products import Product
 from models.forms import Form
+from models.devolution import Devolution
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 import datetime
+import bcrypt
+
 
 
 
@@ -22,6 +25,7 @@ purchase_collection = database.purchases
 brand_collection = database.brands
 products_collection = database.products
 form_collection = database.forms
+devolution_collection = database.devolutions
 
 
 async def get_one_task_id(id):
@@ -60,6 +64,19 @@ async def delete_task(id):
 
 
 # Funciones para el modelo de usuario
+
+
+async def get_login(user):
+    existing_user = await user_collection.find_one({"username": user.username})
+
+    if existing_user:
+        stored_password = existing_user['password']
+        
+        if bcrypt.checkpw(user.password.encode('utf-8'), stored_password.encode('utf-8')):
+            return existing_user
+    
+    return None
+
 
 async def get_one_user_id(id):
     user = await user_collection.find_one({"_id": ObjectId(id)})
@@ -247,7 +264,7 @@ async def get_one_product_id(id):
     return brand
 
 async def get_one_product(name):
-    client = await products_collection.find_one({"name": name})
+    client = await products_collection.find_one({"cod": name})
     return client
 
 async def get_all_product():
@@ -282,6 +299,42 @@ async def delete_product(id):
     await products_collection.delete_one({"_id": ObjectId(id)})
     return True
 
+# Funciones para las devoluciones
+async def get_one_devolution_id(id):
+    brand = await devolution_collection.find_one({"_id": ObjectId(id)})
+    return brand
+
+async def get_one_devolution(cod):
+    devolution = await devolution_collection.find_one({"cod": cod})
+    return devolution
+
+async def get_all_devolution():
+    devolutions = []
+    cursor = devolution_collection.find({})
+    async for document in cursor:
+        if isinstance(document.get("fecha", ""), str) and len(document.get("fecha", "")) > 0:
+            try:
+                # Parse the datetime string
+                fecha = datetime.datetime.strptime(document["fecha"], "%Y-%m-%d %H:%M:%S")
+            except ValueError:
+                # Handle the case where the datetime string is not valid
+                fecha = None
+        else:
+            fecha = None
+        devolutions.append(Devolution(**document))
+    return devolutions
+
+async def create_devolution(devolution):
+    new_devolution = await devolution_collection.insert_one(devolution)
+    created_devolution = await devolution_collection.find_one({"_id": new_devolution.inserted_id})
+    return created_devolution
+
+
+async def delete_devolution(id):
+    await devolution_collection.delete_one({"_id": ObjectId(id)})
+    return True
+
+
 # Funciones para el formulario
 
 async def get_one_form_id(id):
@@ -292,10 +345,13 @@ async def get_one_form(comment):
     form = await form_collection.find_one({"comment": comment})
     return form
 
+<<<<<<< HEAD
 async def get_all_form(page: int =1, limit: int =10 ):
+=======
+async def get_all_form():
+>>>>>>> dd5149173cca872c1ec9bf4d140a82b49618b2a6
     forms = []
-    skip = (page - 1) * limit
-    cursor = form_collection.find({}).skip(skip).limit(limit)
+    cursor = form_collection.find({})
     async for document in cursor:
         if isinstance(document.get("fecha", ""), str) and len(document.get("fecha", "")) > 0:
             try:
@@ -319,3 +375,8 @@ async def delete_form(id):
     await form_collection.delete_one({"_id": ObjectId(id)})
     return True
 
+#Obtener total en numero de comentarios
+
+async def total_comentarios():
+    total = await form_collection.count_documents({})
+    return total

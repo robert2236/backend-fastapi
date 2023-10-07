@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field, validator
 from bson import ObjectId
-
+from datetime import datetime
 
 
 class PyObjectId(ObjectId):
@@ -15,20 +15,13 @@ class PyObjectId(ObjectId):
         raise ValueError('Invalid ObjectId')
      return str(v)
     
-class Marca(BaseModel):
-        id: Optional[PyObjectId] = Field(alias='_id', default=None)
-        name: str
-        description: str
-        owner: str
-        category: str
-        logo: str
-
-class UpdateMarca(BaseModel):
-     name: Optional[str] = None
-     description: Optional[str] = None
-     owner: Optional[str] = None
-     category: Optional[str] = None
-     logo: Optional[str] = None
+class Devolution(BaseModel):
+      id: Optional[PyObjectId] = Field(alias='_id', default=None) 
+      cod: int
+      name: str   
+      observation: str
+      units: int
+      date: datetime = datetime.now()
 
 class Config:
         orm_mode = True
@@ -36,5 +29,3 @@ class Config:
         json_encoders = {
             ObjectId: str
         }
-
-        
