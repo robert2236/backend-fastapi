@@ -8,7 +8,7 @@ from database.database import (
     delete_client  
     )
 from models.clients import Client, UpdateClient
-from fastapi_paginate import Page, add_pagination, paginate
+from fastapi_pagination import Page, add_pagination, paginate
 
 client = APIRouter()
 

@@ -8,7 +8,7 @@ from database.database import (
     update_brand  
     )
 from models.brands import Marca, UpdateMarca
-from fastapi_paginate import Page, add_pagination, paginate
+from fastapi_pagination import Page, add_pagination, paginate
 
 brand = APIRouter()
 

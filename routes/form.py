@@ -7,11 +7,16 @@ from database.database import (
     delete_form  
     )
 from models.forms import Form
-from fastapi_paginate import Page, add_pagination, paginate
+from fastapi_pagination import Page, add_pagination, paginate
 
 form = APIRouter()
 
-@form.get('/api/forms/', response_model=Page[Form])
+@form.get('/api/forms/all')
+async def get_form():
+    response = await get_all_form()  
+    return response
+
+@form.get('/api/forms', response_model=Page[Form])
 async def get_form():
     response = await get_all_form()  
     return paginate(response)

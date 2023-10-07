@@ -1,8 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, Field, validator
 from bson import ObjectId
-import datetime
-
+from datetime import datetime
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -21,7 +20,7 @@ class Client(BaseModel):
       ci: int
       email: str
       phone: int
-      fecha: datetime.datetime = datetime.datetime.now()
+      date: datetime = datetime.now()
 
     
 

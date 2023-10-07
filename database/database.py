@@ -292,7 +292,7 @@ async def get_one_form(comment):
     form = await form_collection.find_one({"comment": comment})
     return form
 
-async def get_all_form(page , limit):
+async def get_all_form(page: int =1, limit: int =10 ):
     forms = []
     skip = (page - 1) * limit
     cursor = form_collection.find({}).skip(skip).limit(limit)
