@@ -14,25 +14,26 @@ class PyObjectId(ObjectId):
         raise ValueError('Invalid ObjectId')
      return str(v)
     
-class Suppliers(BaseModel):
+class Supplier(BaseModel):
    id: Optional[PyObjectId] = Field(alias='_id', default=None)
+   rif: str
    name: str
    direction: str
    phone: int
    email: str
-   aprove: str
-   date: datetime.datetime = datetime.datetime.now()
    category: str
-   contact: str
+   date: datetime.datetime = datetime.datetime.now()
+   
 
-class updateSuppliers(BaseModel):
+
+class UpdateSupplier(BaseModel):
+      rif: Optional[str] = None
       name: Optional[str] = None
       direction: Optional[str] = None
       phone: Optional[str] = None
-      email: Optional[int] = None
-      aprove: Optional[bool] = None
+      email: Optional[str] = None
       category: Optional[str] = None
-      contact: Optional[str] = None
+      
 
 
 class Config:

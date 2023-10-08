@@ -14,25 +14,17 @@ client = APIRouter()
 
 
 @client.get('/api/clients', response_model=Page[Client])
-async def get_clients(email: str = Query(None)):
+async def get_clients(ci: int = Query(0)):
     response = await get_all_clients()
-    if email:
-        filtered_email = [client for client in response if client.email == email]
-        if filtered_email:
-             return paginate(filtered_email)
-        raise HTTPException(404, f"There are no clients asociate with the email {email}")
+    if ci:
+        filtered_ci = [client for client in response if client.ci == ci]
+        if filtered_ci:
+             return paginate(filtered_ci)
+        raise HTTPException(404, f"There are no clients asociate with the email {ci}")
     return paginate(response)
 
 add_pagination(client)
 
-
-
-@client.get('/api/clients/{id}', response_model=Client)
-async def get_client_by_id(id: str):
-    response = await get_one_client_id(id)
-    if response:
-        return response
-    raise HTTPException(404, f"There is no client with the id {id}")
 
 @client.post('/api/clients', response_model=Client)
 async def save_client(client: Client):
