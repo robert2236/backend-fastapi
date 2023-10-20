@@ -25,6 +25,14 @@ async def get_clients(ci: int = Query(0)):
 
 add_pagination(client)
 
+@client.get('/api/clients/{id}', response_model=Client)
+async def get_task(id: str):
+    response = await get_one_client_id(id)
+    if response:
+        return response
+    raise HTTPException(404, f"There is no user with the id {id}")
+
+
 
 @client.post('/api/clients', response_model=Client)
 async def save_client(client: Client):
