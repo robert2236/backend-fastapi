@@ -15,7 +15,7 @@ import bcrypt
 
 
 
-client = AsyncIOMotorClient('mongodb://localhost:27017')
+client = AsyncIOMotorClient('mongodb+srv://robert2236:Tere2021%40@inventario.ram0pfs.mongodb.net/')
 database = client.taskdb
 collection = database.tasks
 user_collection = database.users
