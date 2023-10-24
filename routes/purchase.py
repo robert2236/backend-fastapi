@@ -7,7 +7,7 @@ from database.database import (
     delete_purchase  
     )
 from models.purchase import Purchase, UpdatePurchase
-from fastapi_paginate import Page, add_pagination, paginate
+from fastapi_pagination import Page, add_pagination, paginate
 
 purchase = APIRouter()
 
@@ -52,7 +52,7 @@ async def get_client_by_id(id: str):
 
 @purchase.post('/api/purchases', response_model=Purchase)
 async def save_purchase(purchase: Purchase):
-    findPurchase = await  get_one_client(purchase.cod)
+    findPurchase = await  get_one_client(purchase.code)
     if findPurchase:
         raise HTTPException(409, "Purchase already exists")
 

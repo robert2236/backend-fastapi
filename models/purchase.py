@@ -1,7 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel, Field, validator
 from bson import ObjectId
-import datetime
+from datetime import datetime
+
 
 
 class PyObjectId(ObjectId):
@@ -19,25 +20,24 @@ class PyObjectId(ObjectId):
 class Purchase(BaseModel):
     id: Optional[PyObjectId] = Field(alias='_id', default=None)
     name: str
-    cod: int
+    code: int
     category: str
     supplier: str
-    price: float
-    stock: int
-    stock_min: int
-    stock_max: int
-    datePurchase: datetime.datetime = datetime.datetime.now()
-    dateExpiration: datetime.datetime = datetime.datetime.now()
+    price_usd: float
+    price_bs: float
+    stock: float
+    total: float
+    datePurchase: Optional[datetime]
+    dateExpiration: Optional[datetime]
 
 class UpdatePurchase(BaseModel):
     name: Optional[str] = None
-    cod: Optional[int] = None
+    code: Optional[int] = None
     category: Optional[bool] = None
     supplier: Optional[bool] = None
     price: Optional[float] = None
     stock: Optional[int] = None
-    stock_min: Optional[int] = None
-    stock_max: Optional[int] = None
+    
     
 
 class Config:

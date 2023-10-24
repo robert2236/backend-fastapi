@@ -8,7 +8,7 @@ from database.database import (
     update_product  
     )
 from models.products import Product, UpdateProduct
-from fastapi_paginate import Page, add_pagination, paginate
+from fastapi_pagination import Page, add_pagination, paginate
 
 
 product = APIRouter()
@@ -48,7 +48,7 @@ async def get_products_by_id(id: str):
 
 @product.post('/api/products', response_model=Product)
 async def save_product(product: Product):
-    findClient = await get_one_product(product.name)
+    findClient = await get_one_product(product.code)
     if findClient:
         raise HTTPException(409, "Products already exists")
 

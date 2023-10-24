@@ -8,7 +8,7 @@ from database.database import (
     total_comentarios  
     )
 from models.forms import Form
-from fastapi_paginate import Page, add_pagination, paginate
+from fastapi_pagination import Page, add_pagination, paginate
 
 form = APIRouter()
 

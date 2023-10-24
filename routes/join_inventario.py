@@ -1,22 +1,32 @@
-from fastapi import APIRouter
-from pymongo import MongoClient
+from fastapi import APIRouter, HTTPException, Query
+from database.database import (
+    get_all_product,
+    get_all_purchase
+      
+    )
+from models.clients import Client, UpdateClient
+from fastapi_pagination import Page, add_pagination, paginate
 
 inventario = APIRouter()
-client = MongoClient("mongodb://localhost:27017")
-db = client["taskdb"]
 
-@inventario.get("/join_data/{code}")
-async def join_data(code: int):
-    try:
-        client.server_info()
-        product = db["products"].find_one({"code": code})
-        purchase = db["purchases"].find_one({"cod": code})
-        if not product or not purchase:
-            return {"message": "No se encontraron datos para el código proporcionado"}
 
-        return {
-            "stock_producto": product["stock"],
-            "unidades_compra": purchase["units"]
-        }
-    except Exception as e:
-        return {"message": f"Error al conectar a la base de datos: {str(e)}"}
+@inventario.get('/api/inventario')
+async def get_merged_data():
+    products = await get_all_product()
+    purchases = await get_all_purchase()
+
+    merged_data = []
+
+    for product in products:
+        for purchase in purchases:
+            if product.code == purchase.code:
+                merged_data.append({
+                    'code': product.code,
+                    'name': product.name,
+                    'units': product.units,
+                    'stock': purchase.stock
+                })
+                break
+
+    return merged_data
+    

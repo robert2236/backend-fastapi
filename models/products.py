@@ -22,8 +22,10 @@ class Product(BaseModel):
    code: int
    name: str
    description: str
-   price: int
-   units: int
+   price_usd: float
+   price_bs: float
+   units: float
+   total: float
    dateProducts: datetime.datetime = datetime.datetime.now()
 
 class UpdateProduct(BaseModel):

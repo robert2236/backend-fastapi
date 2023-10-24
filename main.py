@@ -10,6 +10,7 @@ from routes.devolution import devolution
 from routes.join_inventario import inventario
 from routes.tasa import tasa
 from routes.form import form
+from routes.supplier import supplier
 from decouple import config
 
 
@@ -41,5 +42,5 @@ app.include_router(inventario)
 app.include_router(form)
 app.include_router(devolution)
 app.include_router(tasa)
-
+app.include_router(supplier)
 

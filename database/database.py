@@ -1,7 +1,7 @@
 from models.models import Task, UpdateTask
 from models.user import User
 from models.clients import Client
-from models.Suppliers import Suppliers
+from models.suppliers import Supplier
 from models.purchase import Purchase
 from models.brands import Marca
 from models.products import Product
@@ -157,6 +157,10 @@ async def get_one_supplier_id(id):
     supplier = await supplier_collection.find_one({"_id": ObjectId(id)})
     return supplier
 
+async def get_one_supplier(rif):
+    supplier = await supplier_collection.find_one({"rif": rif})
+    return supplier
+
 async def get_all_supplier():
     clients = []
     cursor = supplier_collection.find({})
@@ -170,7 +174,7 @@ async def get_all_supplier():
                 fecha = None
         else:
             fecha = None
-        clients.append(Suppliers(**document))
+        clients.append(Supplier(**document))
     return clients
 
 async def create_supplier(user):
@@ -178,14 +182,25 @@ async def create_supplier(user):
     created_supplier = await supplier_collection.find_one({"_id": new_supplier.inserted_id})
     return created_supplier
 
+async def update_supplier(id: str, data):
+    supplier = {k: v for k, v in data.dict().items() if v is not None}
+    await supplier_collection.update_one({"_id": ObjectId(id)}, {"$set": supplier})
+    document = await supplier_collection.find_one({"_id": ObjectId(id)})
+    return document
+
+async def delete_supplier(id):
+    await supplier_collection.delete_one({"_id": ObjectId(id)})
+    return True
+
+
 # Funciones para la gestion de compras
 
 async def get_one_purchase_id(id):
     purchase = await purchase_collection.find_one({"_id": ObjectId(id)})
     return purchase
 
-async def get_one_client(cod):
-    client = await purchase_collection.find_one({"cod": cod})
+async def get_one_purchase(code):
+    client = await purchase_collection.find_one({"code": code})
     return client
 
 
@@ -263,8 +278,8 @@ async def get_one_product_id(id):
     brand = await products_collection.find_one({"_id": ObjectId(id)})
     return brand
 
-async def get_one_product(name):
-    client = await products_collection.find_one({"cod": name})
+async def get_one_product(code):
+    client = await products_collection.find_one({"code": code})
     return client
 
 async def get_all_product():
@@ -344,6 +359,7 @@ async def get_one_form_id(id):
 async def get_one_form(comment):
     form = await form_collection.find_one({"comment": comment})
     return form
+
 
 async def get_all_form():
     forms = []
