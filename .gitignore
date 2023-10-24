@@ -23,3 +23,4 @@ Thumbs.db
 
 # Archivos y carpetas específicos de FastAPI
 env/
+.vercel
