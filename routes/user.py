@@ -78,7 +78,7 @@ async def login_user(user: User):
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
 
-import traceback
+
 
 @user.post("/api/usuarios", response_model=User)
 async def save_user(user: User):

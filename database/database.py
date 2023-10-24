@@ -1,7 +1,7 @@
 from models.models import Task, UpdateTask
 from models.user import User
 from models.clients import Client
-from models.suppliers import Supplier
+from models.Suppliers import Supplier
 from models.purchase import Purchase
 from models.brands import Marca
 from models.products import Product
@@ -15,7 +15,7 @@ import bcrypt
 
 
 
-client = AsyncIOMotorClient('mongodb://localhost:27017')
+client = AsyncIOMotorClient('mongodb+srv://robert2236:Tere2021%40@inventario.ram0pfs.mongodb.net/')
 database = client.taskdb
 collection = database.tasks
 user_collection = database.users

@@ -12,7 +12,13 @@ from routes.tasa import tasa
 from routes.form import form
 from routes.supplier import supplier
 from decouple import config
+import uvicorn
+from os import getenv
 
+
+if __name__ =="__main__":
+    port = int(getenv ("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0",port=port, reload=True)
 
 
 app = FastAPI()
@@ -43,4 +49,3 @@ app.include_router(form)
 app.include_router(devolution)
 app.include_router(tasa)
 app.include_router(supplier)
-
