@@ -21,6 +21,7 @@ from fastapi_paginate import Page, add_pagination, paginate
 def generar_token(usuario_id, secret_key):
     payload = {"usuario_id": usuario_id}
     token = jwt.encode(payload, secret_key, algorithm="HS256")
+    print(token)
     return token
 
 # Definir una clave secreta para firmar el token
@@ -66,6 +67,7 @@ async def login_user(user: User):
             data={"sub": user.username},
             expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         )
+        print(access_token)
         # Autenticación exitosa
         return {
             "username": user.username,
@@ -85,26 +87,30 @@ async def save_user(user: User):
     try:
         userFound = await get_one_user(user.username)
         if userFound:
-            raise HTTPException(409, "User already exists")
+            raise HTTPException(409, "El usuario ya existe")
         
         hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
         user.password = hashed_password.decode('utf-8')
        
         response = await create_user(user.dict())
-        print(response)
         
         if response:
-            # Generate the authentication token
+            # Generar el token de autenticación
             secret_key = secrets.token_hex(32)
-            token = generar_token(response.id, secret_key)
+            token = generar_token(str(response['_id']), secret_key)
             print("token", token)
-            return {"response": response, "token": token}
+            return {"response": {
+                "id": str(response['_id']),
+                "username": user.username,
+                "password": user.password
+            }, "token": token}
         
-        raise HTTPException(400, "Something went wrong")
+        raise HTTPException(400, "Algo salió mal")
     
     except Exception as e:
         traceback.print_exc()
-        raise HTTPException(500, "Internal server error")
+        raise HTTPException(500, "Error interno del servidor")
+
 
 @user.put('/api/usuarios/{id}', response_model=User)
 async def put_user(id: str, data: UpdateUser):
