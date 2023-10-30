@@ -8,7 +8,7 @@ from database.database import (
     delete_user,
     get_login  
     )
-from models.user import User, UpdateUser
+from models.user import User, UpdateUser, Token
 import bcrypt
 import jwt
 import secrets
@@ -21,7 +21,6 @@ from fastapi_paginate import Page, add_pagination, paginate
 def generar_token(usuario_id, secret_key):
     payload = {"usuario_id": usuario_id}
     token = jwt.encode(payload, secret_key, algorithm="HS256")
-    print(token)
     return token
 
 # Definir una clave secreta para firmar el token
@@ -58,7 +57,7 @@ async def get_task(id: str):
         return response
     raise HTTPException(404, f"There is no user with the id {id}")
 
-@user.post("/api/user/login", response_model=User)
+@user.post("/api/user/login", response_model=Token)
 async def login_user(user: User):
     response = await get_login(user)
     if response:
@@ -69,15 +68,15 @@ async def login_user(user: User):
         )
         print(access_token)
         # Autenticación exitosa
-        return {
-            "username": user.username,
-            "password": user.password,
-            "access_token": access_token,
-            "token_type": "bearer"
-        }
+        return Token(
+            username=user.username,
+            access_token=access_token,
+            token_type="bearer"
+        )
     else:
         # Autenticación fallida
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
+
 
 
 
