@@ -7,7 +7,7 @@ from database.database import (
     update_supplier,
     delete_supplier 
     )
-from models.Suppliers import Supplier, UpdateSupplier
+from models.suppliers import Supplier, UpdateSupplier
 from fastapi_pagination import Page, add_pagination, paginate
 
 supplier = APIRouter()

@@ -14,13 +14,13 @@ purchase = APIRouter()
 
 
 @purchase.get('/api/purchases', response_model=Page[Purchase])
-async def get_purchase(category: str = Query(None)):
+async def get_purchase(code: int = Query(0)):
     response = await get_all_purchase()
-    if category:
-        filtered_purchases = [purchase for purchase in response if purchase.category == category]
-        if filtered_purchases:
-            return paginate(filtered_purchases)
-        raise HTTPException(404, f"There are no purchases in the category {category}")
+    if code:
+        filtered_products = [product for product in response if product.code == code]
+        if filtered_products:
+            return paginate(filtered_products)
+        raise HTTPException(404, f"There are no products associated with the code {code}")
     return paginate(response)
 
 add_pagination(purchase)

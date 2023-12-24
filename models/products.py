@@ -21,7 +21,6 @@ class Product(BaseModel):
    id: Optional[PyObjectId] = Field(alias='_id', default=None)
    code: int
    name: str
-   description: str
    price_usd: float
    price_bs: float
    units: float
@@ -31,7 +30,6 @@ class Product(BaseModel):
 class UpdateProduct(BaseModel):
     name: Optional[str] = None
     code: Optional[int] = None
-    description: Optional[str] = None
     price: Optional[int] = None
     units: Optional[int] = None
 

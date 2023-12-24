@@ -15,8 +15,15 @@ product = APIRouter()
 
 
 @product.get('/api/products', response_model=Page[Product])
-async def get_products():
+async def get_products(code: int = Query(None)):
     response = await get_all_product()
+    
+    if code:
+        filtered_products = [product for product in response if product.code == code]
+        if filtered_products:
+            return paginate(filtered_products)
+        raise HTTPException(404, f"There are no products associated with the code {code}")
+    
     return paginate(response)
 
 add_pagination(product)

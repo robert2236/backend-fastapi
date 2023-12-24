@@ -14,7 +14,6 @@ inventario = APIRouter()
 async def get_merged_data():
     products = await get_all_product()
     purchases = await get_all_purchase()
-
     merged_data = []
 
     for product in products:
