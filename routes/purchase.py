@@ -3,6 +3,7 @@ from database.database import (
     get_one_purchase_id,
      get_one_client,
     get_all_purchase,
+    update_purchase,
     create_purchase,
     delete_purchase  
     )
@@ -25,6 +26,13 @@ async def get_purchase(code: int = Query(0)):
 
 add_pagination(purchase)
 
+@purchase.get('/api/purchases/{id}', response_model=Purchase)
+async def get_purchase_id(id: str):
+    response = await get_one_purchase_id(id)
+    if response:
+        return response
+    raise HTTPException(404, f"There is no user with the id {id}")
+
 @purchase.get('/api/purchases/total')
 async def get_total_price_stocks():
     purchases = await get_all_purchase()
@@ -43,12 +51,7 @@ async def get_purchase():
         })
     return purchases_data
 
-@purchase.get('/api/purchases/{id}', response_model=Purchase)
-async def get_client_by_id(id: str):
-    response = await get_one_purchase_id(id)
-    if response:
-        return response
-    raise HTTPException(404, f"There is no client with the id {id}")
+
 
 @purchase.post('/api/purchases', response_model=Purchase)
 async def save_purchase(purchase: Purchase):

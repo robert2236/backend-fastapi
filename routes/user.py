@@ -77,20 +77,18 @@ async def login_user(user: User):
         # Autenticación fallida
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
-
-
-
 @user.post("/api/usuarios", response_model=User)
 async def save_user(user: User):
     try:
         userFound = await get_one_user(user.username)
         if userFound:
-            raise HTTPException(409, "User already exists")
+            raise HTTPException(status_code=409, detail="El usuario ya existe")
         
         hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
         user.password = hashed_password.decode('utf-8')
        
         response = await create_user(user.dict())
+       
         print(response)
         
         if response:
@@ -100,11 +98,11 @@ async def save_user(user: User):
             print("token", token)
             return {"response": response, "token": token}
         
-        raise HTTPException(400, "Something went wrong")
+        raise HTTPException(status_code=400,detail="Ha ocurrido un error ")
     
     except Exception as e:
         traceback.print_exc()
-        raise HTTPException(500, "Internal server error")
+        raise HTTPException(status_code=500, detail="Error interno del servidor")
 
 @user.put('/api/usuarios/{id}', response_model=User)
 async def put_user(id: str, data: UpdateUser):

@@ -35,13 +35,13 @@ async def get_brand_by_id(id: str):
 async def save_brandt(brand: Marca):
     findClient = await get_one_brand(brand.name)
     if findClient:
-        raise HTTPException(409, "Brand already exists")
+        raise HTTPException(status_code=409, detail="La marca ya esta registrada en el sistema 😔")
 
     response = await create_brand(brand.dict())
     print(response)
     if response:
         return response
-    raise HTTPException(400, "Something went wrong")
+    raise HTTPException(status_code=400, detail="Hubo un error al realizar el registro 😔")
 
 
 @brand.put('/api/brands/{id}', response_model=Marca)

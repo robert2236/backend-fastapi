@@ -12,6 +12,7 @@ from routes.tasa import tasa
 from routes.form import form
 from routes.supplier import supplier
 from decouple import config
+from routes.total import total
 
 
 
@@ -43,3 +44,4 @@ app.include_router(form)
 app.include_router(devolution)
 app.include_router(tasa)
 app.include_router(supplier)
+app.include_router(total)

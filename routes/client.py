@@ -38,12 +38,12 @@ async def get_task(id: str):
 async def save_client(client: Client):
     findClient = await get_one_client(client.ci)
     if findClient:
-        raise HTTPException(409, "Client already exists")
+        raise HTTPException(status_code=409, detail="El cliente ya se encuentra registrado en el sistema ✔️")
     response = await create_client(client.dict())
     print(response)
     if response:
         return response
-    raise HTTPException(400, "Something went wrong")
+    raise HTTPException(status_code=400, detail="Hubo un error al realizar el registro 😔")
 
 @client.put('/api/clients/{id}', response_model=Client)
 async def put_client(id: str, data: UpdateClient):

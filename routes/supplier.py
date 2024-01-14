@@ -36,7 +36,7 @@ async def get_supplier_by_rif(rif: str):
 async def save_supplier(supplier: Supplier):
     findClient = await get_one_supplier(supplier.rif)
     if findClient:
-        raise HTTPException(409, "Supplier already exists")
+        raise HTTPException(status_code=409, detail="El proveedor ya se encuentra registrado")
     response = await create_supplier(supplier.dict())
     print(response)
     if response:

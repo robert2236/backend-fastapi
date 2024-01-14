@@ -22,7 +22,6 @@ class Supplier(BaseModel):
    phone: int
    email: str
    category: str
-   date: datetime.datetime = datetime.datetime.now()
    
 
 

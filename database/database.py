@@ -26,6 +26,30 @@ brand_collection = database.brands
 products_collection = database.products
 form_collection = database.forms
 devolution_collection = database.devolutions
+inventario_collection = database.inventario
+
+
+#Funciones para obtener total de entradas, salidas, marcas, clientes
+
+async def total_elementos_coleccion(nombre_coleccion: str):
+    # Obtener la colección específica según el nombre proporcionado
+    if nombre_coleccion == "purchase":
+        coleccion = purchase_collection
+    elif nombre_coleccion == "products":
+        coleccion = products_collection
+    elif nombre_coleccion == "brands":
+        coleccion = brand_collection
+    elif nombre_coleccion == "clients":
+        coleccion = client_collection
+    elif nombre_coleccion == "devolutions":
+        coleccion = devolution_collection
+    elif nombre_coleccion == "suppliers":
+        coleccion = supplier_collection
+
+    total = await coleccion.count_documents({})
+    return total
+
+
 
 
 async def get_one_task_id(id):
@@ -219,6 +243,12 @@ async def get_all_purchase():
             fecha = None
         purchases.append(Purchase(**document))
     return purchases
+
+async def update_purchase(id: str, data):
+    purchase = {k: v for k, v in data.dict().items() if v is not None}
+    await purchase_collection.update_one({"_id": ObjectId(id)}, {"$set": purchase})
+    document = await purchase_collection.find_one({"_id": ObjectId(id)})
+    return document   
 
 async def create_purchase(purchase):
     new_purchase = await purchase_collection.insert_one(purchase)

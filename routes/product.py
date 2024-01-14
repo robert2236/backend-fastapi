@@ -55,10 +55,6 @@ async def get_products_by_id(id: str):
 
 @product.post('/api/products', response_model=Product)
 async def save_product(product: Product):
-    findClient = await get_one_product(product.code)
-    if findClient:
-        raise HTTPException(409, "Products already exists")
-
     response = await create_product(product.dict())
     print(response)
     if response:
